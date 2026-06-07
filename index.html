@@ -3,133 +3,147 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <title>Kampus Futsal Booking</title>
-
   <link rel="stylesheet" href="style.css" />
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link 
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" 
-    rel="stylesheet"
-  >
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
 </head>
 <body>
 
   <!-- NAVBAR -->
-  <header class="navbar">
+  <header class="navbar" id="navbar">
     <div class="container nav-wrapper">
       <a href="#beranda" class="logo">
         <span class="logo-icon">⚽</span>
-        <span>Kampus Futsal</span>
+        <span>Kampus<b>Futsal</b></span>
       </a>
 
       <nav class="nav-menu" id="navMenu">
-        <a href="#beranda">Beranda</a>
-        <a href="#lapangan">Lapangan</a>
-        <a href="#jadwal">Jadwal</a>
-        <a href="#booking">Booking</a>
-        <a href="#riwayat">Riwayat</a>
-        <a href="#admin">Admin</a>
+        <a href="#beranda" class="nav-link">Beranda</a>
+        <a href="#lapangan" class="nav-link">Lapangan</a>
+        <a href="#jadwal" class="nav-link">Jadwal</a>
+        <a href="#booking" class="nav-link">Booking</a>
+        <a href="#riwayat" class="nav-link">Riwayat</a>
+        <a href="#admin" class="nav-link">Admin</a>
+        <a href="#booking" class="btn btn-primary nav-cta">Pesan Sekarang</a>
       </nav>
 
-      <button class="menu-toggle" id="menuToggle" type="button">☰</button>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </header>
 
-  <!-- BERANDA -->
-  <section class="hero section" id="beranda">
+  <!-- HERO -->
+  <section class="hero" id="beranda">
+    <div class="hero-bg"></div>
     <div class="container hero-grid">
       <div class="hero-content">
-        <p class="badge">Sistem Booking Lapangan Futsal</p>
-
-        <h1>Booking lapangan jadi lebih cepat, jelas, dan tanpa ribet.</h1>
-
-        <p class="hero-desc">
-          Sistem ini membantu pelanggan melihat jadwal lapangan, memilih slot kosong,
-          dan melakukan pemesanan secara mandiri tanpa harus menunggu balasan admin.
-        </p>
-
-        <div class="hero-actions">
-          <a href="#jadwal" class="btn btn-primary">Lihat Jadwal</a>
-          <a href="#booking" class="btn btn-secondary">Booking Sekarang</a>
+        <div class="badge">
+          <span class="badge-dot"></span>
+          Sistem Booking Lapangan Futsal
         </div>
-
+        <h1>Booking lapangan <em>lebih cepat</em> tanpa ribet.</h1>
+        <p class="hero-desc">
+          Lihat jadwal lapangan, pilih slot kosong, dan lakukan pemesanan mandiri
+          — tanpa harus menunggu balasan admin.
+        </p>
+        <div class="hero-actions">
+          <a href="#jadwal" class="btn btn-primary btn-lg">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Cek Jadwal
+          </a>
+          <a href="#booking" class="btn btn-ghost btn-lg">
+            Booking Sekarang →
+          </a>
+        </div>
         <div class="hero-stats">
-          <div>
+          <div class="stat-item">
             <h3 id="statTotalBooking">0</h3>
             <p>Total Booking</p>
           </div>
-
-          <div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
             <h3>1</h3>
             <p>Lapangan Aktif</p>
           </div>
-
-          <div>
-            <h3>08.00-23.00</h3>
-            <p>Jam Operasional</p>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <h3>15 Slot</h3>
+            <p>Jadwal/Hari</p>
           </div>
         </div>
       </div>
 
-      <div class="hero-card">
-        <div class="hero-card-header">
-          <span>Jadwal Hari Ini</span>
-          <span class="status online">Live</span>
+      <div class="hero-panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <div class="panel-icon">📅</div>
+            <div>
+              <p class="panel-label">Jadwal Hari Ini</p>
+              <p class="panel-sub" id="heroDate">—</p>
+            </div>
+          </div>
+          <span class="live-badge"><span class="live-dot"></span>Live</span>
         </div>
-
-        <div class="mini-schedule">
-          <div>
-            <span>08.00 - 09.00</span>
-            <b class="available">Tersedia</b>
+        <div class="panel-slots">
+          <div class="panel-slot">
+            <div class="slot-time">
+              <span class="slot-icon slot-icon--available">✓</span>
+              <span>08.00 – 09.00</span>
+            </div>
+            <span class="slot-tag tag-available">Tersedia</span>
           </div>
-
-          <div>
-            <span>13.00 - 14.00</span>
-            <b class="maintenance-text">Maintenance</b>
+          <div class="panel-slot">
+            <div class="slot-time">
+              <span class="slot-icon slot-icon--maintenance">⚙</span>
+              <span>13.00 – 14.00</span>
+            </div>
+            <span class="slot-tag tag-maintenance">Maintenance</span>
           </div>
-
-          <div>
-            <span>17.00 - 18.00</span>
-            <b class="booked">Sudah Dibooking</b>
+          <div class="panel-slot">
+            <div class="slot-time">
+              <span class="slot-icon slot-icon--booked">✕</span>
+              <span>17.00 – 18.00</span>
+            </div>
+            <span class="slot-tag tag-booked">Dibooking</span>
           </div>
-
-          <div>
-            <span>19.00 - 20.00</span>
-            <b class="waiting">Menunggu</b>
+          <div class="panel-slot">
+            <div class="slot-time">
+              <span class="slot-icon slot-icon--waiting">⏳</span>
+              <span>19.00 – 20.00</span>
+            </div>
+            <span class="slot-tag tag-waiting">Menunggu</span>
           </div>
         </div>
+        <a href="#jadwal" class="panel-cta">Lihat semua jadwal →</a>
       </div>
     </div>
   </section>
 
   <!-- FITUR -->
-  <section class="section features">
+  <section class="section features" id="fitur">
     <div class="container">
-      <div class="section-heading">
-        <p class="badge">Solusi Sistem</p>
-        <h2>Masalah booking manual bisa dikurangi dengan sistem digital.</h2>
+      <div class="section-heading center">
+        <span class="badge">Mengapa Pakai Sistem Ini?</span>
+        <h2>Kurangi masalah booking <em>manual</em> dengan solusi digital.</h2>
       </div>
-
       <div class="feature-grid">
         <div class="feature-card">
-          <span>📅</span>
+          <div class="feature-icon">📅</div>
           <h3>Jadwal Transparan</h3>
-          <p>Pelanggan dapat melihat slot tersedia tanpa harus bertanya ke admin.</p>
+          <p>Pelanggan dapat melihat slot tersedia secara real-time tanpa harus bertanya ke admin.</p>
         </div>
-
-        <div class="feature-card">
-          <span>✅</span>
+        <div class="feature-card feature-card--accent">
+          <div class="feature-icon">✅</div>
           <h3>Cegah Double Booking</h3>
-          <p>Slot yang sudah dipesan akan otomatis ditandai agar tidak dipilih ulang.</p>
+          <p>Slot yang sudah dipesan otomatis terkunci agar tidak bisa dipilih ulang oleh pengguna lain.</p>
         </div>
-
         <div class="feature-card">
-          <span>📊</span>
+          <div class="feature-icon">📊</div>
           <h3>Dashboard Admin</h3>
-          <p>Admin bisa memantau booking, status pembayaran, dan data pelanggan.</p>
+          <p>Pantau semua booking, status pembayaran, dan data pelanggan dari satu tempat.</p>
         </div>
       </div>
     </div>
@@ -139,10 +153,9 @@
   <section class="section" id="lapangan">
     <div class="container">
       <div class="section-heading">
-        <p class="badge">Lapangan</p>
-        <h2>Informasi lapangan yang tersedia.</h2>
+        <span class="badge">Lapangan</span>
+        <h2>Fasilitas lapangan kami.</h2>
       </div>
-
       <div class="field-grid" id="fieldGrid"></div>
     </div>
   </section>
@@ -151,7 +164,7 @@
   <section class="section schedule-section" id="jadwal">
     <div class="container">
       <div class="section-heading">
-        <p class="badge">Cek Ketersediaan</p>
+        <span class="badge">Cek Ketersediaan</span>
         <h2>Lihat slot jadwal lapangan.</h2>
       </div>
 
@@ -160,22 +173,21 @@
           <label for="scheduleDate">Tanggal</label>
           <input type="date" id="scheduleDate">
         </div>
-
         <div class="input-group">
           <label for="scheduleField">Lapangan</label>
           <select id="scheduleField"></select>
         </div>
-
         <button class="btn btn-primary" id="checkScheduleBtn" type="button">
-          Cek Jadwal
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Cek
         </button>
       </div>
 
       <div class="legend">
-        <span><i class="dot available-dot"></i> Tersedia</span>
-        <span><i class="dot booked-dot"></i> Dibooking</span>
-        <span><i class="dot waiting-dot"></i> Menunggu</span>
-        <span><i class="dot maintenance-dot"></i> Maintenance</span>
+        <span class="legend-item"><i class="dot dot-available"></i> Tersedia</span>
+        <span class="legend-item"><i class="dot dot-booked"></i> Dibooking</span>
+        <span class="legend-item"><i class="dot dot-waiting"></i> Menunggu</span>
+        <span class="legend-item"><i class="dot dot-maintenance"></i> Maintenance</span>
       </div>
 
       <div class="slot-grid" id="slotGrid"></div>
@@ -183,35 +195,35 @@
   </section>
 
   <!-- BOOKING -->
-  <section class="section" id="booking">
+  <section class="section booking-section" id="booking">
     <div class="container">
       <div class="section-heading">
-        <p class="badge">Form Booking</p>
-        <h2>Isi data pemesanan lapangan.</h2>
+        <span class="badge">Form Pemesanan</span>
+        <h2>Isi data booking lapangan.</h2>
       </div>
 
       <div class="booking-layout">
-        <form class="booking-form" id="bookingForm">
+        <form class="booking-form card" id="bookingForm" onsubmit="return false;">
+          <div class="form-section-title">Data Penyewa</div>
           <div class="form-row">
             <div class="input-group">
               <label for="nama">Nama Penyewa</label>
               <input type="text" id="nama" placeholder="Masukkan nama lengkap">
             </div>
-
             <div class="input-group">
               <label for="whatsapp">Nomor WhatsApp</label>
-              <input type="text" id="whatsapp" placeholder="Contoh: 08123456789">
+              <input type="text" id="whatsapp" placeholder="08123456789">
             </div>
           </div>
 
+          <div class="form-section-title">Detail Booking</div>
           <div class="form-row">
             <div class="input-group">
               <label for="bookingField">Lapangan</label>
               <select id="bookingField"></select>
             </div>
-
             <div class="input-group">
-              <label for="bookingDate">Tanggal Booking</label>
+              <label for="bookingDate">Tanggal</label>
               <input type="date" id="bookingDate">
             </div>
           </div>
@@ -221,7 +233,6 @@
               <label for="startTime">Jam Mulai</label>
               <select id="startTime"></select>
             </div>
-
             <div class="input-group">
               <label for="duration">Durasi</label>
               <select id="duration">
@@ -233,23 +244,30 @@
           </div>
 
           <div class="input-group">
-            <label for="catatan">Catatan Tambahan</label>
-            <textarea id="catatan" rows="4" placeholder="Contoh: booking untuk latihan rutin tim"></textarea>
+            <label for="catatan">Catatan (opsional)</label>
+            <textarea id="catatan" rows="3" placeholder="Contoh: booking untuk latihan rutin tim"></textarea>
           </div>
 
           <div class="price-box">
-            <span>Total Harga</span>
-            <strong id="totalPrice">Rp0</strong>
+            <div>
+              <p class="price-label">Total Harga</p>
+              <p class="price-note">Harga per jam × durasi</p>
+            </div>
+            <strong id="totalPrice" class="price-value">Rp0</strong>
           </div>
 
-          <button type="submit" class="btn btn-primary btn-full">
+          <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
             Kirim Booking
           </button>
         </form>
 
-        <div class="summary-card" id="summaryCard">
-          <h3>Ringkasan Booking</h3>
-          <p class="muted">Data booking akan muncul setelah form dikirim.</p>
+        <div class="summary-card card" id="summaryCard">
+          <div class="summary-empty">
+            <div class="summary-empty-icon">📋</div>
+            <h4>Ringkasan Booking</h4>
+            <p>Data booking akan muncul setelah form dikirim.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -259,26 +277,27 @@
   <section class="section" id="riwayat">
     <div class="container">
       <div class="section-heading">
-        <p class="badge">Riwayat</p>
-        <h2>Riwayat booking pelanggan.</h2>
+        <span class="badge">Riwayat</span>
+        <h2>Semua riwayat booking.</h2>
       </div>
 
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Kode</th>
-              <th>Nama</th>
-              <th>Lapangan</th>
-              <th>Tanggal</th>
-              <th>Jam</th>
-              <th>Status</th>
-              <th>Total</th>
-            </tr>
-          </thead>
-
-          <tbody id="historyTable"></tbody>
-        </table>
+      <div class="table-wrapper card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Lapangan</th>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Status</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
@@ -287,64 +306,81 @@
   <section class="section admin-section" id="admin">
     <div class="container">
       <div class="section-heading">
-        <p class="badge">Dashboard Admin</p>
-        <h2>Kelola data booking lapangan.</h2>
+        <span class="badge">Dashboard Admin</span>
+        <h2>Kelola semua booking lapangan.</h2>
       </div>
 
       <div class="admin-stats">
-        <div class="admin-card">
-          <p>Booking Masuk</p>
-          <h3 id="adminTotalBooking">0</h3>
+        <div class="stat-card card">
+          <div class="stat-card-icon stat-card-icon--blue">📥</div>
+          <div>
+            <p class="stat-card-label">Booking Masuk</p>
+            <h3 id="adminTotalBooking">0</h3>
+          </div>
         </div>
-
-        <div class="admin-card">
-          <p>Menunggu Konfirmasi</p>
-          <h3 id="adminWaitingBooking">0</h3>
+        <div class="stat-card card">
+          <div class="stat-card-icon stat-card-icon--yellow">⏳</div>
+          <div>
+            <p class="stat-card-label">Menunggu</p>
+            <h3 id="adminWaitingBooking">0</h3>
+          </div>
         </div>
-
-        <div class="admin-card">
-          <p>Dikonfirmasi</p>
-          <h3 id="adminConfirmedBooking">0</h3>
+        <div class="stat-card card">
+          <div class="stat-card-icon stat-card-icon--green">✅</div>
+          <div>
+            <p class="stat-card-label">Dikonfirmasi</p>
+            <h3 id="adminConfirmedBooking">0</h3>
+          </div>
         </div>
-
-        <div class="admin-card">
-          <p>Total Pendapatan</p>
-          <h3 id="adminRevenue">Rp0</h3>
+        <div class="stat-card card">
+          <div class="stat-card-icon stat-card-icon--primary">💰</div>
+          <div>
+            <p class="stat-card-label">Pendapatan</p>
+            <h3 id="adminRevenue">Rp0</h3>
+          </div>
         </div>
       </div>
 
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Kode</th>
-              <th>Nama</th>
-              <th>Lapangan</th>
-              <th>Tanggal</th>
-              <th>Jam</th>
-              <th>Status</th>
-              <th>Aksi</th>
-            </tr>
-          </thead>
-
-          <tbody id="adminTable"></tbody>
-        </table>
+      <div class="table-wrapper card">
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>Kode</th>
+                <th>Nama</th>
+                <th>Lapangan</th>
+                <th>Tanggal</th>
+                <th>Jam</th>
+                <th>Status</th>
+                <th>Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="adminTable"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- MODAL -->
-  <div class="modal" id="modal">
-    <div class="modal-content">
-      <button class="modal-close" id="modalClose" type="button">×</button>
+  <div class="modal" id="modal" role="dialog" aria-modal="true">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-content card">
+      <button class="modal-close" id="modalClose" type="button" aria-label="Tutup">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
       <div id="modalBody"></div>
     </div>
   </div>
 
   <!-- FOOTER -->
   <footer class="footer">
-    <div class="container">
-      <p>© 2026 Kampus Futsal Booking — Prototype Rekayasa Perangkat Lunak</p>
+    <div class="container footer-inner">
+      <div class="footer-logo">
+        <span class="logo-icon">⚽</span>
+        <span>Kampus<b>Futsal</b></span>
+      </div>
+      <p class="footer-copy">© 2026 Kampus Futsal Booking — Prototype Rekayasa Perangkat Lunak</p>
     </div>
   </footer>
 
