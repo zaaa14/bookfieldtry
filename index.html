@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Kampus Futsal Booking</title>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link 
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" 
+    rel="stylesheet"
+  >
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="navbar">
+    <div class="container nav-wrapper">
+      <a href="#beranda" class="logo">
+        <span class="logo-icon">⚽</span>
+        <span>Kampus Futsal</span>
+      </a>
+
+      <nav class="nav-menu" id="navMenu">
+        <a href="#beranda">Beranda</a>
+        <a href="#lapangan">Lapangan</a>
+        <a href="#jadwal">Jadwal</a>
+        <a href="#booking">Booking</a>
+        <a href="#riwayat">Riwayat</a>
+        <a href="#admin">Admin</a>
+      </nav>
+
+      <button class="menu-toggle" id="menuToggle" type="button">☰</button>
+    </div>
+  </header>
+
+  <!-- BERANDA -->
+  <section class="hero section" id="beranda">
+    <div class="container hero-grid">
+      <div class="hero-content">
+        <p class="badge">Sistem Booking Lapangan Futsal</p>
+
+        <h1>Booking lapangan jadi lebih cepat, jelas, dan tanpa ribet.</h1>
+
+        <p class="hero-desc">
+          Sistem ini membantu pelanggan melihat jadwal lapangan, memilih slot kosong,
+          dan melakukan pemesanan secara mandiri tanpa harus menunggu balasan admin.
+        </p>
+
+        <div class="hero-actions">
+          <a href="#jadwal" class="btn btn-primary">Lihat Jadwal</a>
+          <a href="#booking" class="btn btn-secondary">Booking Sekarang</a>
+        </div>
+
+        <div class="hero-stats">
+          <div>
+            <h3 id="statTotalBooking">0</h3>
+            <p>Total Booking</p>
+          </div>
+
+          <div>
+            <h3>1</h3>
+            <p>Lapangan Aktif</p>
+          </div>
+
+          <div>
+            <h3>08.00-23.00</h3>
+            <p>Jam Operasional</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-card">
+        <div class="hero-card-header">
+          <span>Jadwal Hari Ini</span>
+          <span class="status online">Live</span>
+        </div>
+
+        <div class="mini-schedule">
+          <div>
+            <span>08.00 - 09.00</span>
+            <b class="available">Tersedia</b>
+          </div>
+
+          <div>
+            <span>13.00 - 14.00</span>
+            <b class="maintenance-text">Maintenance</b>
+          </div>
+
+          <div>
+            <span>17.00 - 18.00</span>
+            <b class="booked">Sudah Dibooking</b>
+          </div>
+
+          <div>
+            <span>19.00 - 20.00</span>
+            <b class="waiting">Menunggu</b>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FITUR -->
+  <section class="section features">
+    <div class="container">
+      <div class="section-heading">
+        <p class="badge">Solusi Sistem</p>
+        <h2>Masalah booking manual bisa dikurangi dengan sistem digital.</h2>
+      </div>
+
+      <div class="feature-grid">
+        <div class="feature-card">
+          <span>📅</span>
+          <h3>Jadwal Transparan</h3>
+          <p>Pelanggan dapat melihat slot tersedia tanpa harus bertanya ke admin.</p>
+        </div>
+
+        <div class="feature-card">
+          <span>✅</span>
+          <h3>Cegah Double Booking</h3>
+          <p>Slot yang sudah dipesan akan otomatis ditandai agar tidak dipilih ulang.</p>
+        </div>
+
+        <div class="feature-card">
+          <span>📊</span>
+          <h3>Dashboard Admin</h3>
+          <p>Admin bisa memantau booking, status pembayaran, dan data pelanggan.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LAPANGAN -->
+  <section class="section" id="lapangan">
+    <div class="container">
+      <div class="section-heading">
+        <p class="badge">Lapangan</p>
+        <h2>Informasi lapangan yang tersedia.</h2>
+      </div>
+
+      <div class="field-grid" id="fieldGrid"></div>
+    </div>
+  </section>
+
+  <!-- JADWAL -->
+  <section class="section schedule-section" id="jadwal">
+    <div class="container">
+      <div class="section-heading">
+        <p class="badge">Cek Ketersediaan</p>
+        <h2>Lihat slot jadwal lapangan.</h2>
+      </div>
+
+      <div class="filter-box">
+        <div class="input-group">
+          <label for="scheduleDate">Tanggal</label>
+          <input type="date" id="scheduleDate">
+        </div>
+
+        <div class="input-group">
+          <label for="scheduleField">Lapangan</label>
+          <select id="scheduleField"></select>
+        </div>
+
+        <button class="btn btn-primary" id="checkScheduleBtn" type="button">
+          Cek Jadwal
+        </button>
+      </div>
+
+      <div class="legend">
+        <span><i class="dot available-dot"></i> Tersedia</span>
+        <span><i class="dot booked-dot"></i> Dibooking</span>
+        <span><i class="dot waiting-dot"></i> Menunggu</span>
+        <span><i class="dot maintenance-dot"></i> Maintenance</span>
+      </div>
+
+      <div class="slot-grid" id="slotGrid"></div>
+    </div>
+  </section>
+
+  <!-- BOOKING -->
+  <section class="section" id="booking">
+    <div class="container">
+      <div class="section-heading">
+        <p class="badge">Form Booking</p>
+        <h2>Isi data pemesanan lapangan.</h2>
+      </div>
+
+      <div class="booking-layout">
+        <form class="booking-form" id="bookingForm">
+          <div class="form-row">
+            <div class="input-group">
+              <label for="nama">Nama Penyewa</label>
+              <input type="text" id="nama" placeholder="Masukkan nama lengkap">
+            </div>
+
+            <div class="input-group">
+              <label for="whatsapp">Nomor WhatsApp</label>
+              <input type="text" id="whatsapp" placeholder="Contoh: 08123456789">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="bookingField">Lapangan</label>
+              <select id="bookingField"></select>
+            </div>
+
+            <div class="input-group">
+              <label for="bookingDate">Tanggal Booking</label>
+              <input type="date" id="bookingDate">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="input-group">
+              <label for="startTime">Jam Mulai</label>
+              <select id="startTime"></select>
+            </div>
+
+            <div class="input-group">
+              <label for="duration">Durasi</label>
+              <select id="duration">
+                <option value="1">1 Jam</option>
+                <option value="2">2 Jam</option>
+                <option value="3">3 Jam</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label for="catatan">Catatan Tambahan</label>
+            <textarea id="catatan" rows="4" placeholder="Contoh: booking untuk latihan rutin tim"></textarea>
+          </div>
+
+          <div class="price-box">
+            <span>Total Harga</span>
+            <strong id="totalPrice">Rp0</strong>
+          </div>
+
+          <button type="submit" class="btn btn-primary btn-full">
+            Kirim Booking
+          </button>
+        </form>
+
+        <div class="summary-card" id="summaryCard">
+          <h3>Ringkasan Booking</h3>
+          <p class="muted">Data booking akan muncul setelah form dikirim.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RIWAYAT -->
+  <section class="section" id="riwayat">
+    <div class="container">
+      <div class="section-heading">
+        <p class="badge">Riwayat</p>
+        <h2>Riwayat booking pelanggan.</h2>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Nama</th>
+              <th>Lapangan</th>
+              <th>Tanggal</th>
+              <th>Jam</th>
+              <th>Status</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+
+          <tbody id="historyTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ADMIN -->
+  <section class="section admin-section" id="admin">
+    <div class="container">
+      <div class="section-heading">
+        <p class="badge">Dashboard Admin</p>
+        <h2>Kelola data booking lapangan.</h2>
+      </div>
+
+      <div class="admin-stats">
+        <div class="admin-card">
+          <p>Booking Masuk</p>
+          <h3 id="adminTotalBooking">0</h3>
+        </div>
+
+        <div class="admin-card">
+          <p>Menunggu Konfirmasi</p>
+          <h3 id="adminWaitingBooking">0</h3>
+        </div>
+
+        <div class="admin-card">
+          <p>Dikonfirmasi</p>
+          <h3 id="adminConfirmedBooking">0</h3>
+        </div>
+
+        <div class="admin-card">
+          <p>Total Pendapatan</p>
+          <h3 id="adminRevenue">Rp0</h3>
+        </div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Kode</th>
+              <th>Nama</th>
+              <th>Lapangan</th>
+              <th>Tanggal</th>
+              <th>Jam</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
+
+          <tbody id="adminTable"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODAL -->
+  <div class="modal" id="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modalClose" type="button">×</button>
+      <div id="modalBody"></div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="container">
+      <p>© 2026 Kampus Futsal Booking — Prototype Rekayasa Perangkat Lunak</p>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
