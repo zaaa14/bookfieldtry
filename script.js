@@ -1,3 +1,7 @@
+/* =========================================
+   KAMPUS FUTSAL — script.js
+   ========================================= */
+
 const fields = [
   {
     id: 1,
@@ -5,25 +9,15 @@ const fields = [
     price: 100000,
     status: "Aktif",
     image: "https://images.unsplash.com/photo-1624880357913-a8539238245b?auto=format&fit=crop&w=1000&q=80",
-    facilities: ["Indoor", "Rumput Sintetis", "Lampu Malam", "Ruang Tunggu"]
+    facilities: ["🏠 Indoor", "🌿 Rumput Sintetis", "💡 Lampu Malam", "🪑 Ruang Tunggu"]
   }
 ];
 
 const timeSlots = [
-  "08.00 - 09.00",
-  "09.00 - 10.00",
-  "10.00 - 11.00",
-  "11.00 - 12.00",
-  "13.00 - 14.00",
-  "14.00 - 15.00",
-  "15.00 - 16.00",
-  "16.00 - 17.00",
-  "17.00 - 18.00",
-  "18.00 - 19.00",
-  "19.00 - 20.00",
-  "20.00 - 21.00",
-  "21.00 - 22.00",
-  "22.00 - 23.00"
+  "08.00 - 09.00", "09.00 - 10.00", "10.00 - 11.00", "11.00 - 12.00",
+  "13.00 - 14.00", "14.00 - 15.00", "15.00 - 16.00", "16.00 - 17.00",
+  "17.00 - 18.00", "18.00 - 19.00", "19.00 - 20.00", "20.00 - 21.00",
+  "21.00 - 22.00", "22.00 - 23.00"
 ];
 
 const defaultBookings = [
@@ -56,46 +50,42 @@ const defaultBookings = [
 ];
 
 const maintenanceSlots = [
-  {
-    fieldId: 1,
-    date: getToday(),
-    time: "13.00 - 14.00"
-  }
+  { fieldId: 1, date: getToday(), time: "13.00 - 14.00" }
 ];
 
-const fieldGrid = document.getElementById("fieldGrid");
-const scheduleDate = document.getElementById("scheduleDate");
-const scheduleField = document.getElementById("scheduleField");
-const slotGrid = document.getElementById("slotGrid");
-const checkScheduleBtn = document.getElementById("checkScheduleBtn");
-
-const bookingForm = document.getElementById("bookingForm");
-const bookingField = document.getElementById("bookingField");
-const bookingDate = document.getElementById("bookingDate");
-const startTime = document.getElementById("startTime");
-const duration = document.getElementById("duration");
-const totalPrice = document.getElementById("totalPrice");
-const summaryCard = document.getElementById("summaryCard");
-
-const historyTable = document.getElementById("historyTable");
-const adminTable = document.getElementById("adminTable");
-
-const adminTotalBooking = document.getElementById("adminTotalBooking");
+/* DOM refs */
+const fieldGrid           = document.getElementById("fieldGrid");
+const scheduleDate        = document.getElementById("scheduleDate");
+const scheduleField       = document.getElementById("scheduleField");
+const slotGrid            = document.getElementById("slotGrid");
+const checkScheduleBtn    = document.getElementById("checkScheduleBtn");
+const bookingForm         = document.getElementById("bookingForm");
+const bookingField        = document.getElementById("bookingField");
+const bookingDate         = document.getElementById("bookingDate");
+const startTime           = document.getElementById("startTime");
+const duration            = document.getElementById("duration");
+const totalPrice          = document.getElementById("totalPrice");
+const summaryCard         = document.getElementById("summaryCard");
+const historyTable        = document.getElementById("historyTable");
+const adminTable          = document.getElementById("adminTable");
+const adminTotalBooking   = document.getElementById("adminTotalBooking");
 const adminWaitingBooking = document.getElementById("adminWaitingBooking");
 const adminConfirmedBooking = document.getElementById("adminConfirmedBooking");
-const adminRevenue = document.getElementById("adminRevenue");
-const statTotalBooking = document.getElementById("statTotalBooking");
-
-const menuToggle = document.getElementById("menuToggle");
-const navMenu = document.getElementById("navMenu");
-
-const modal = document.getElementById("modal");
-const modalClose = document.getElementById("modalClose");
-const modalBody = document.getElementById("modalBody");
+const adminRevenue        = document.getElementById("adminRevenue");
+const statTotalBooking    = document.getElementById("statTotalBooking");
+const menuToggle          = document.getElementById("menuToggle");
+const navMenu             = document.getElementById("navMenu");
+const modal               = document.getElementById("modal");
+const modalOverlay        = document.getElementById("modalOverlay");
+const modalClose          = document.getElementById("modalClose");
+const modalBody           = document.getElementById("modalBody");
+const navbar              = document.getElementById("navbar");
 
 let bookings = loadBookings();
 
+/* ===================== INIT ===================== */
 document.addEventListener("DOMContentLoaded", () => {
+  setupHeroDate();
   setupDefaultDates();
   renderFields();
   populateSelects();
@@ -105,230 +95,184 @@ document.addEventListener("DOMContentLoaded", () => {
   updateTotalPrice();
 });
 
+/* ===================== NAVBAR ===================== */
 menuToggle.addEventListener("click", () => {
-  navMenu.classList.toggle("show");
+  const open = navMenu.classList.toggle("show");
+  menuToggle.classList.toggle("open", open);
 });
 
-document.querySelectorAll(".nav-menu a").forEach((link) => {
+document.querySelectorAll(".nav-link, .nav-cta").forEach(link => {
   link.addEventListener("click", () => {
     navMenu.classList.remove("show");
+    menuToggle.classList.remove("open");
   });
 });
 
+// Navbar shadow on scroll
+window.addEventListener("scroll", () => {
+  navbar.classList.toggle("scrolled", window.scrollY > 10);
+});
+
+/* ===================== SCHEDULE EVENTS ===================== */
 checkScheduleBtn.addEventListener("click", renderSchedule);
 scheduleDate.addEventListener("change", renderSchedule);
 scheduleField.addEventListener("change", renderSchedule);
 
-bookingField.addEventListener("change", () => {
-  syncAvailableStartTimes();
-  updateTotalPrice();
-});
-
-bookingDate.addEventListener("change", () => {
-  syncAvailableStartTimes();
-  updateTotalPrice();
-});
-
+/* ===================== BOOKING EVENTS ===================== */
+bookingField.addEventListener("change", () => { syncAvailableStartTimes(); updateTotalPrice(); });
+bookingDate.addEventListener("change", () => { syncAvailableStartTimes(); updateTotalPrice(); });
 duration.addEventListener("change", updateTotalPrice);
 startTime.addEventListener("change", updateTotalPrice);
-
 bookingForm.addEventListener("submit", handleBookingSubmit);
 
+/* ===================== MODAL EVENTS ===================== */
 modalClose.addEventListener("click", closeModal);
+modalOverlay.addEventListener("click", closeModal);
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
 
-modal.addEventListener("click", (event) => {
-  if (event.target === modal) {
-    closeModal();
-  }
-});
-
+/* ===================== HELPERS ===================== */
 function getToday() {
   const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}-${String(now.getDate()).padStart(2,"0")}`;
+}
 
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0");
-  const day = String(now.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
+function setupHeroDate() {
+  const heroDate = document.getElementById("heroDate");
+  if (!heroDate) return;
+  const now = new Date();
+  const opts = { weekday: "long", day: "numeric", month: "long", year: "numeric" };
+  heroDate.textContent = now.toLocaleDateString("id-ID", opts);
 }
 
 function setupDefaultDates() {
   const today = getToday();
-
   scheduleDate.value = today;
   scheduleDate.min = today;
-
   bookingDate.value = today;
   bookingDate.min = today;
 }
 
 function loadBookings() {
-  const savedBookings = localStorage.getItem("futsal_bookings_single");
-
-  if (savedBookings) {
-    return JSON.parse(savedBookings);
-  }
-
-  localStorage.setItem("futsal_bookings_single", JSON.stringify(defaultBookings));
+  const saved = localStorage.getItem("futsal_bookings_v2");
+  if (saved) return JSON.parse(saved);
+  localStorage.setItem("futsal_bookings_v2", JSON.stringify(defaultBookings));
   return defaultBookings;
 }
 
 function saveBookings() {
-  localStorage.setItem("futsal_bookings_single", JSON.stringify(bookings));
+  localStorage.setItem("futsal_bookings_v2", JSON.stringify(bookings));
 }
 
 function formatRupiah(number) {
   return new Intl.NumberFormat("id-ID", {
-    style: "currency",
-    currency: "IDR",
-    maximumFractionDigits: 0
+    style: "currency", currency: "IDR", maximumFractionDigits: 0
   }).format(number);
 }
 
+/* ===================== FIELD RENDER ===================== */
 function renderFields() {
   fieldGrid.innerHTML = "";
-
-  fields.forEach((field) => {
+  fields.forEach(field => {
     const card = document.createElement("div");
     card.className = "field-card";
-
     card.innerHTML = `
-      <div class="field-image" style="background-image: url('${field.image}')"></div>
-
+      <div class="field-image" style="background-image:url('${field.image}')"></div>
       <div class="field-body">
         <div class="field-top">
           <div>
             <h3>${field.name}</h3>
-            <p class="muted">Status: ${field.status}</p>
+            <span class="field-status">${field.status}</span>
           </div>
-
-          <p class="field-price">${formatRupiah(field.price)}/jam</p>
+          <div>
+            <p class="field-price">${formatRupiah(field.price)}</p>
+            <p class="field-price-sub">per jam</p>
+          </div>
         </div>
-
-        <p class="muted">
-          Lapangan futsal indoor yang dapat dipesan secara online melalui sistem.
-          Pelanggan dapat memilih tanggal dan jam sesuai slot yang tersedia.
+        <p class="field-desc">
+          Lapangan futsal indoor yang dapat dipesan secara online.
+          Pilih tanggal dan jam sesuai slot yang tersedia, tanpa perlu menghubungi admin.
         </p>
-
         <div class="facilities">
-          ${field.facilities.map((item) => `<span>${item}</span>`).join("")}
+          ${field.facilities.map(f => `<span>${f}</span>`).join("")}
         </div>
-
         <button class="btn btn-primary" onclick="selectFieldForBooking(${field.id})">
-          Pilih Lapangan
+          Pilih Lapangan →
         </button>
       </div>
     `;
-
     fieldGrid.appendChild(card);
   });
 }
 
+/* ===================== SELECTS ===================== */
 function populateSelects() {
   scheduleField.innerHTML = "";
   bookingField.innerHTML = "";
   startTime.innerHTML = "";
-
-  fields.forEach((field) => {
-    scheduleField.innerHTML += `<option value="${field.id}">${field.name}</option>`;
-    bookingField.innerHTML += `<option value="${field.id}">${field.name}</option>`;
+  fields.forEach(f => {
+    scheduleField.innerHTML += `<option value="${f.id}">${f.name}</option>`;
+    bookingField.innerHTML += `<option value="${f.id}">${f.name}</option>`;
   });
-
-  timeSlots.forEach((slot) => {
+  timeSlots.forEach(slot => {
     startTime.innerHTML += `<option value="${slot}">${slot}</option>`;
   });
-
   syncAvailableStartTimes();
 }
 
 function selectFieldForBooking(fieldId) {
   bookingField.value = fieldId;
-
   syncAvailableStartTimes();
   updateTotalPrice();
-
-  document.getElementById("booking").scrollIntoView({
-    behavior: "smooth"
-  });
+  document.getElementById("booking").scrollIntoView({ behavior: "smooth" });
 }
 
+/* ===================== SLOT STATUS ===================== */
 function getSlotStatus(fieldId, date, slot) {
-  const isMaintenance = maintenanceSlots.some((item) => {
-    return (
-      item.fieldId === Number(fieldId) &&
-      item.date === date &&
-      item.time === slot
-    );
-  });
+  const isMaintenance = maintenanceSlots.some(
+    m => m.fieldId === Number(fieldId) && m.date === date && m.time === slot
+  );
+  if (isMaintenance) return "Maintenance";
 
-  if (isMaintenance) {
-    return "Maintenance";
-  }
-
-  const booking = bookings.find((item) => {
-    return (
-      item.fieldId === Number(fieldId) &&
-      item.date === date &&
-      item.time === slot &&
-      item.status !== "Dibatalkan"
-    );
-  });
-
-  if (!booking) {
-    return "Tersedia";
-  }
-
-  if (booking.status === "Dikonfirmasi") {
-    return "Dibooking";
-  }
-
-  return "Menunggu";
+  const booking = bookings.find(
+    b => b.fieldId === Number(fieldId) && b.date === date && b.time === slot && b.status !== "Dibatalkan"
+  );
+  if (!booking) return "Tersedia";
+  return booking.status === "Dikonfirmasi" ? "Dibooking" : "Menunggu";
 }
 
+/* ===================== SCHEDULE RENDER ===================== */
 function renderSchedule() {
-  const selectedDate = scheduleDate.value;
-  const selectedField = Number(scheduleField.value);
-
+  const selDate = scheduleDate.value;
+  const selField = Number(scheduleField.value);
   slotGrid.innerHTML = "";
 
-  timeSlots.forEach((slot) => {
-    const status = getSlotStatus(selectedField, selectedDate, slot);
+  timeSlots.forEach(slot => {
+    const status = getSlotStatus(selField, selDate, slot);
+    const disabled = status !== "Tersedia";
+
     const card = document.createElement("div");
+    card.className = `slot-card${disabled ? " slot-card--disabled" : ""}`;
 
-    const isDisabled = status !== "Tersedia";
-    card.className = `slot-card ${isDisabled ? "disabled" : ""}`;
-
-    let statusClass = "slot-available";
-
-    if (status === "Dibooking") {
-      statusClass = "slot-booked";
-    }
-
-    if (status === "Menunggu") {
-      statusClass = "slot-waiting";
-    }
-
-    if (status === "Maintenance") {
-      statusClass = "slot-maintenance";
-    }
+    const pillClass = {
+      "Tersedia": "slot-available-pill",
+      "Dibooking": "slot-booked-pill",
+      "Menunggu": "slot-waiting-pill",
+      "Maintenance": "slot-maintenance-pill"
+    }[status] || "slot-available-pill";
 
     card.innerHTML = `
       <h4>${slot}</h4>
-      <p class="slot-status ${statusClass}">${status}</p>
+      <span class="slot-status-pill ${pillClass}">${status}</span>
     `;
 
-    if (!isDisabled) {
+    if (!disabled) {
       card.addEventListener("click", () => {
-        bookingDate.value = selectedDate;
-        bookingField.value = selectedField;
-        startTime.value = slot;
-
+        bookingDate.value = selDate;
+        bookingField.value = selField;
         syncAvailableStartTimes();
+        startTime.value = slot;
         updateTotalPrice();
-
-        document.getElementById("booking").scrollIntoView({
-          behavior: "smooth"
-        });
+        document.getElementById("booking").scrollIntoView({ behavior: "smooth" });
       });
     }
 
@@ -336,41 +280,34 @@ function renderSchedule() {
   });
 }
 
+/* ===================== SYNC TIMES ===================== */
 function syncAvailableStartTimes() {
-  const selectedField = Number(bookingField.value);
-  const selectedDate = bookingDate.value;
-
-  Array.from(startTime.options).forEach((option) => {
-    const status = getSlotStatus(selectedField, selectedDate, option.value);
-    option.disabled = status !== "Tersedia";
+  const selField = Number(bookingField.value);
+  const selDate = bookingDate.value;
+  Array.from(startTime.options).forEach(opt => {
+    opt.disabled = getSlotStatus(selField, selDate, opt.value) !== "Tersedia";
   });
 }
 
+/* ===================== PRICE ===================== */
 function updateTotalPrice() {
-  const selectedFieldId = Number(bookingField.value);
-  const selectedField = fields.find((field) => field.id === selectedFieldId);
-
-  if (!selectedField) {
-    totalPrice.textContent = formatRupiah(0);
-    return;
-  }
-
-  const selectedDuration = Number(duration.value);
-  const total = selectedField.price * selectedDuration;
-
-  totalPrice.textContent = formatRupiah(total);
+  const selFieldId = Number(bookingField.value);
+  const selField = fields.find(f => f.id === selFieldId);
+  if (!selField) { totalPrice.textContent = formatRupiah(0); return; }
+  totalPrice.textContent = formatRupiah(selField.price * Number(duration.value));
 }
 
-function handleBookingSubmit(event) {
-  event.preventDefault();
+/* ===================== BOOKING SUBMIT ===================== */
+function handleBookingSubmit(e) {
+  e.preventDefault();
 
   const name = document.getElementById("nama").value.trim();
   const whatsapp = document.getElementById("whatsapp").value.trim();
-  const selectedFieldId = Number(bookingField.value);
-  const selectedField = fields.find((field) => field.id === selectedFieldId);
+  const selFieldId = Number(bookingField.value);
+  const selField = fields.find(f => f.id === selFieldId);
   const date = bookingDate.value;
   const time = startTime.value;
-  const selectedDuration = Number(duration.value);
+  const selDuration = Number(duration.value);
   const note = document.getElementById("catatan").value.trim();
 
   if (!name || !whatsapp || !date || !time) {
@@ -381,31 +318,26 @@ function handleBookingSubmit(event) {
     return;
   }
 
-  const status = getSlotStatus(selectedFieldId, date, time);
-
+  const status = getSlotStatus(selFieldId, date, time);
   if (status !== "Tersedia") {
     showModal(`
       <h3>Slot tidak tersedia</h3>
-      <p>Maaf, jadwal <b>${time}</b> pada tanggal <b>${date}</b> sudah tidak tersedia.</p>
+      <p>Maaf, jadwal <b>${time}</b> pada tanggal <b>${formatDate(date)}</b> sudah tidak tersedia.</p>
     `);
-
     renderSchedule();
     syncAvailableStartTimes();
     return;
   }
 
-  const bookingCode = generateBookingCode();
-  const total = selectedField.price * selectedDuration;
+  const code = generateBookingCode();
+  const total = selField.price * selDuration;
 
   const newBooking = {
-    code: bookingCode,
-    name,
-    whatsapp,
-    fieldId: selectedFieldId,
-    fieldName: selectedField.name,
-    date,
-    time,
-    duration: selectedDuration,
+    code, name, whatsapp,
+    fieldId: selFieldId,
+    fieldName: selField.name,
+    date, time,
+    duration: selDuration,
     total,
     status: "Menunggu Konfirmasi",
     note
@@ -426,108 +358,71 @@ function handleBookingSubmit(event) {
   updateTotalPrice();
 
   showModal(`
-    <h3>Booking Berhasil Dikirim</h3>
-    <p>Kode booking kamu adalah <b>${bookingCode}</b>.</p>
-    <p>Status saat ini: <b>Menunggu Konfirmasi</b>.</p>
+    <h3>Booking Berhasil! 🎉</h3>
+    <p>Kode booking kamu: <b>${code}</b></p>
+    <p>Status: <b>Menunggu Konfirmasi</b></p>
+    <p style="margin-top:10px;color:var(--muted);font-size:0.85rem;">
+      Silakan tunggu konfirmasi dari admin. Terima kasih!
+    </p>
   `);
 }
 
 function generateBookingCode() {
-  const number = bookings.length + 1;
-  return `BKF-${String(number).padStart(3, "0")}`;
+  return `BKF-${String(bookings.length + 1).padStart(3, "0")}`;
 }
 
+function formatDate(dateStr) {
+  if (!dateStr) return "-";
+  const d = new Date(dateStr + "T00:00:00");
+  return d.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" });
+}
+
+/* ===================== SUMMARY ===================== */
 function renderSummary(booking) {
   summaryCard.innerHTML = `
-    <h3>Ringkasan Booking</h3>
-
-    <div class="summary-item">
-      <span>Kode Booking</span>
-      <b>${booking.code}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Nama</span>
-      <b>${booking.name}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Lapangan</span>
-      <b>${booking.fieldName}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Tanggal</span>
-      <b>${booking.date}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Jam</span>
-      <b>${booking.time}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Durasi</span>
-      <b>${booking.duration} Jam</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Total</span>
-      <b>${formatRupiah(booking.total)}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Status</span>
-      <b>${booking.status}</b>
-    </div>
-
-    <p class="muted" style="margin-top: 18px;">
-      Silakan tunggu konfirmasi admin. Pada versi backend, status ini akan terhubung ke database.
+    <p class="summary-header">Ringkasan Booking</p>
+    ${summaryRow("Kode Booking", booking.code)}
+    ${summaryRow("Nama", booking.name)}
+    ${summaryRow("Lapangan", booking.fieldName)}
+    ${summaryRow("Tanggal", formatDate(booking.date))}
+    ${summaryRow("Jam", booking.time)}
+    ${summaryRow("Durasi", `${booking.duration} Jam`)}
+    ${summaryRow("Total", formatRupiah(booking.total))}
+    ${summaryRow("Status", booking.status)}
+    <p class="muted" style="margin-top:16px;font-size:0.82rem;line-height:1.5;">
+      Pada versi backend, status ini akan terhubung ke database dan diperbarui secara otomatis.
     </p>
   `;
 }
 
-function renderHistory() {
-  historyTable.innerHTML = "";
-
-  if (bookings.length === 0) {
-    historyTable.innerHTML = `
-      <tr>
-        <td colspan="7">Belum ada data booking.</td>
-      </tr>
-    `;
-    return;
-  }
-
-  bookings.forEach((booking) => {
-    historyTable.innerHTML += `
-      <tr>
-        <td>${booking.code}</td>
-        <td>${booking.name}</td>
-        <td>${booking.fieldName}</td>
-        <td>${booking.date}</td>
-        <td>${booking.time}</td>
-        <td>${getStatusBadge(booking.status)}</td>
-        <td>${formatRupiah(booking.total)}</td>
-      </tr>
-    `;
-  });
+function summaryRow(label, value) {
+  return `<div class="summary-item"><span>${label}</span><b>${value}</b></div>`;
 }
 
+/* ===================== HISTORY ===================== */
+function renderHistory() {
+  if (bookings.length === 0) {
+    historyTable.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px;">Belum ada data booking.</td></tr>`;
+    return;
+  }
+  historyTable.innerHTML = bookings.map(b => `
+    <tr>
+      <td><b>${b.code}</b></td>
+      <td>${b.name}</td>
+      <td>${b.fieldName}</td>
+      <td>${formatDate(b.date)}</td>
+      <td>${b.time}</td>
+      <td>${getStatusBadge(b.status)}</td>
+      <td><b>${formatRupiah(b.total)}</b></td>
+    </tr>
+  `).join("");
+}
+
+/* ===================== ADMIN ===================== */
 function renderAdmin() {
-  adminTable.innerHTML = "";
-
-  const waiting = bookings.filter((booking) => {
-    return booking.status === "Menunggu Konfirmasi";
-  }).length;
-
-  const confirmed = bookings.filter((booking) => {
-    return booking.status === "Dikonfirmasi";
-  }).length;
-
-  const revenue = bookings
-    .filter((booking) => booking.status === "Dikonfirmasi")
-    .reduce((sum, booking) => sum + booking.total, 0);
+  const waiting   = bookings.filter(b => b.status === "Menunggu Konfirmasi").length;
+  const confirmed = bookings.filter(b => b.status === "Dikonfirmasi").length;
+  const revenue   = bookings.filter(b => b.status === "Dikonfirmasi").reduce((s, b) => s + b.total, 0);
 
   adminTotalBooking.textContent = bookings.length;
   adminWaitingBooking.textContent = waiting;
@@ -536,152 +431,82 @@ function renderAdmin() {
   statTotalBooking.textContent = bookings.length;
 
   if (bookings.length === 0) {
-    adminTable.innerHTML = `
-      <tr>
-        <td colspan="7">Belum ada data booking.</td>
-      </tr>
-    `;
+    adminTable.innerHTML = `<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:32px;">Belum ada data booking.</td></tr>`;
     return;
   }
 
-  bookings.forEach((booking) => {
-    adminTable.innerHTML += `
-      <tr>
-        <td>${booking.code}</td>
-        <td>${booking.name}</td>
-        <td>${booking.fieldName}</td>
-        <td>${booking.date}</td>
-        <td>${booking.time}</td>
-        <td>${getStatusBadge(booking.status)}</td>
-        <td>
-          <div class="action-buttons">
-            <button class="btn btn-small btn-primary" onclick="confirmBooking('${booking.code}')">
-              Konfirmasi
-            </button>
-
-            <button class="btn btn-small btn-danger" onclick="cancelBooking('${booking.code}')">
-              Batalkan
-            </button>
-
-            <button class="btn btn-small btn-secondary" onclick="showBookingDetail('${booking.code}')">
-              Detail
-            </button>
-          </div>
-        </td>
-      </tr>
-    `;
-  });
+  adminTable.innerHTML = bookings.map(b => `
+    <tr>
+      <td><b>${b.code}</b></td>
+      <td>${b.name}</td>
+      <td>${b.fieldName}</td>
+      <td>${formatDate(b.date)}</td>
+      <td>${b.time}</td>
+      <td>${getStatusBadge(b.status)}</td>
+      <td>
+        <div class="action-buttons">
+          <button class="btn btn-sm btn-primary" onclick="confirmBooking('${b.code}')">Konfirmasi</button>
+          <button class="btn btn-sm btn-danger" onclick="cancelBooking('${b.code}')">Batalkan</button>
+          <button class="btn btn-sm btn-secondary" onclick="showBookingDetail('${b.code}')">Detail</button>
+        </div>
+      </td>
+    </tr>
+  `).join("");
 }
 
 function getStatusBadge(status) {
-  let className = "status-waiting";
-
-  if (status === "Dikonfirmasi") {
-    className = "status-confirmed";
-  }
-
-  if (status === "Dibatalkan") {
-    className = "status-canceled";
-  }
-
-  return `<span class="status-pill ${className}">${status}</span>`;
+  const cls = {
+    "Menunggu Konfirmasi": "status-waiting",
+    "Dikonfirmasi": "status-confirmed",
+    "Dibatalkan": "status-canceled"
+  }[status] || "status-waiting";
+  return `<span class="status-pill ${cls}">${status}</span>`;
 }
 
+/* ===================== ADMIN ACTIONS ===================== */
 function confirmBooking(code) {
-  const booking = bookings.find((item) => item.code === code);
-
-  if (!booking) return;
-
-  booking.status = "Dikonfirmasi";
+  const b = bookings.find(b => b.code === code);
+  if (!b) return;
+  b.status = "Dikonfirmasi";
   saveBookings();
-
-  renderSchedule();
-  renderHistory();
-  renderAdmin();
-
-  showModal(`
-    <h3>Booking Dikonfirmasi</h3>
-    <p>Booking dengan kode <b>${code}</b> berhasil dikonfirmasi.</p>
-  `);
+  renderSchedule(); renderHistory(); renderAdmin();
+  showModal(`<h3>Booking Dikonfirmasi ✅</h3><p>Booking <b>${code}</b> berhasil dikonfirmasi.</p>`);
 }
 
 function cancelBooking(code) {
-  const booking = bookings.find((item) => item.code === code);
-
-  if (!booking) return;
-
-  booking.status = "Dibatalkan";
+  const b = bookings.find(b => b.code === code);
+  if (!b) return;
+  b.status = "Dibatalkan";
   saveBookings();
-
-  renderSchedule();
-  renderHistory();
-  renderAdmin();
-
-  showModal(`
-    <h3>Booking Dibatalkan</h3>
-    <p>Booking dengan kode <b>${code}</b> berhasil dibatalkan.</p>
-  `);
+  renderSchedule(); renderHistory(); renderAdmin();
+  showModal(`<h3>Booking Dibatalkan</h3><p>Booking <b>${code}</b> telah dibatalkan.</p>`);
 }
 
 function showBookingDetail(code) {
-  const booking = bookings.find((item) => item.code === code);
-
-  if (!booking) return;
-
+  const b = bookings.find(b => b.code === code);
+  if (!b) return;
   showModal(`
     <h3>Detail Booking</h3>
-
-    <div class="summary-item">
-      <span>Kode</span>
-      <b>${booking.code}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Nama</span>
-      <b>${booking.name}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>WhatsApp</span>
-      <b>${booking.whatsapp}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Lapangan</span>
-      <b>${booking.fieldName}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Tanggal</span>
-      <b>${booking.date}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Jam</span>
-      <b>${booking.time}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Total</span>
-      <b>${formatRupiah(booking.total)}</b>
-    </div>
-
-    <div class="summary-item">
-      <span>Status</span>
-      <b>${booking.status}</b>
-    </div>
-
-    <p class="muted" style="margin-top: 16px;">
-      Catatan: ${booking.note || "-"}
-    </p>
+    ${summaryRow("Kode", b.code)}
+    ${summaryRow("Nama", b.name)}
+    ${summaryRow("WhatsApp", b.whatsapp)}
+    ${summaryRow("Lapangan", b.fieldName)}
+    ${summaryRow("Tanggal", formatDate(b.date))}
+    ${summaryRow("Jam", b.time)}
+    ${summaryRow("Total", formatRupiah(b.total))}
+    ${summaryRow("Status", b.status)}
+    <p class="muted" style="margin-top:14px;font-size:0.85rem;">Catatan: ${b.note || "—"}</p>
   `);
 }
 
+/* ===================== MODAL ===================== */
 function showModal(content) {
   modalBody.innerHTML = content;
   modal.classList.add("show");
+  document.body.style.overflow = "hidden";
 }
 
 function closeModal() {
   modal.classList.remove("show");
+  document.body.style.overflow = "";
 }
